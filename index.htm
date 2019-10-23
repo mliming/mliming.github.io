@@ -3,8 +3,102 @@
     <meta charset="utf-8">
     <title>PlayCanvas Helffdlo Cube</title>
     <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no' />
+    <script src='MasterMindlog.js'></script>
+    <link rel="stylesheet" type="text/css" href="MasterMindCSS.css">
 </head>
-<body>
-    hello
-</body>
+<body id='bdyP'>
+    <div id='sps' class='divSec'>
+        <p>b g r y w l</p>
+        <input id='GuessBox' type=text spellcheck="false">
+    </div>
+    <div id='butDivO' class='divSec'>
+        <button id='evaluGuess' onclick="CheckGuess()">Guess</button>
+    </div>
+    <div id='butDivT' class='divSec'>
+        <button id='evaluGuess' onclick="BeginGame()">Start Game</button>
+    </div>
+    <div id='guessPart' style=""></div>
+    </body>
+    <script>
+
+        var MasterLog = new MasterMindlog();
+
+        function CheckGuess() {
+
+            //bdyEl = document.getElementById('bdyP');
+            guessEl = document.getElementById('guessPart');
+            parEl = document.createElement('p');
+            parEW = document.createElement('p');
+
+            var guessBox = document.getElementById('GuessBox');
+            var guessDis;
+            MasterLog.guess = guessBox.value;
+            //guessDis = MasterLog.GenerateGuessStr();
+            MasterLog.CopyNumCodeToGuess();
+            //parEl.innerHTML = MasterLog._RandCode + " : " + MasterLog._GuessCdN;
+            MasterLog.GetBlackReturns();
+            MasterLog.GetWhiteReturns();
+
+            parEl.innerHTML = guessDis + " : " + MasterLog._GuessCdR;
+
+            AddGuessPar();
+            if (MasterLog.guess == this._RandCode) {
+                parEW.innerHTML = "Corr";
+                bdyEl.appendChild(parEW);
+            }
+            //bdyEl.appendChild(parEl);
+
+            MasterLog.ClearGuessResult();
+
+        }
+
+        function BeginGame() {
+
+            bdyEl = document.getElementById('bdyP');
+            parEl = document.createElement('p');
+
+                MasterLog.GenerateCode();
+                MasterLog.GetNumOfColorsCode();
+
+            RemoveGuesses();
+            //parEl.innerHTML = ":: " + MasterLog._RandCode;
+
+            //bdyEl.appendChild(parEl);
+
+        }
+
+        function AddGuessPar() {
+
+            var guessDis;
+            var resulDis;
+            var parEl = document.createElement('p');
+            var bdyEl = document.getElementById('guessPart');
+
+            guessDis = MasterLog.GenerateGuessStr();
+            resulDis = MasterLog.GenerateResultStr();
+
+            parEl.id = "GuessP" + MasterLog.guessNum;
+            parEl.innerHTML = guessDis + resulDis;
+            MasterLog.guessNum = MasterLog.guessNum + 1;
+
+            bdyEl.appendChild(parEl);
+
+        }
+
+        function RemoveGuesses() {
+
+            var guess;
+            var bdyEl = document.getElementById('guessPart');
+
+            for (var i = 0; i < MasterLog.guessNum; i++) {
+
+                guess = document.getElementById('GuessP' + i);
+                bdyEl.removeChild(guess);
+
+            }
+
+            MasterLog.guessNum = 0;
+        }
+
+    </script>
 </html>
