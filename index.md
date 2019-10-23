@@ -1,4 +1,4 @@
-<html>
+
 <head>
     <meta charset="utf-8">
     <title>PlayCanvas Helffdlo Cube</title>
@@ -20,5 +20,4 @@
      <script type="text/javascript">var i = 0;
 alert("hi")</script>
     </body>
-   
-    </html>
+  
