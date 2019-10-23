@@ -1,0 +1,14 @@
+.divSec {
+
+    margin-bottom: 10px;
+    margin-top: 10px;
+
+}
+
+#guessPart {
+
+    margin-top:20px;
+    overflow:scroll;
+    height:200px;
+    
+}
