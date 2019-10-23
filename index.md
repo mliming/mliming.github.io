@@ -17,7 +17,8 @@
         <button id='evaluGuess' onclick="BeginGame()">Start Game</button>
     </div>
     <div id='guessPart' style="margin-top:100px;overflow:scroll;height:200px"></div>
-    </body>
-    <script>var i = 0;
+     <script type="text/javascript">var i = 0;
 alert("hi")</script>
+    </body>
+   
     </html>
