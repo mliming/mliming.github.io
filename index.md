@@ -18,4 +18,5 @@
     </div>
     <div id='guessPart' style="margin-top:100px;overflow:scroll;height:200px"></div>
     </body>
+    <script>var i = 0;</script>
     </html>
