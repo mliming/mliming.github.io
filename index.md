@@ -8,7 +8,7 @@
 <body id='bdyP'>
     <div id='sps'>
         <p>b g r y w l</p>
-        <input id='GuessBox' type=text spellcheck="false" />
+        <input id='GuessBox' type='text' spellcheck="false" />
     </div>
     <div id='butDivO'>
         <button id='evaluGuess' onclick="CheckGuess()">Guess</button>
