@@ -8,31 +8,55 @@
 </head>
 <body id='bdyP'>
     <div id='sps' class='divSec'>
-        <p>b g r y w l</p>
-        <input id='GuessBox' type=text spellcheck="false">
+        <p>Available Letters: b g r y w l</p>
+        <input id='GuessBox' type=text spellcheck="false" oninput="ConGuess()">
     </div>
     <div id='butDivO' class='divSec'>
-        <button id='evaluGuess' onclick="CheckGuess()">Guess</button>
+        <select id='lenCode'>
+            <option>4 - letter secret code</option>
+            <option>5 - letter secret code</option>
+            <option>6 - letter secret code</option>
+        </select>
+    </div>
+    <div id='butDivO' class='divSec'>
+        <button id='evaGues' onclick="CheckGuess()" disabled>Guess</button>
     </div>
     <div id='butDivT' class='divSec'>
-        <button id='evaluGuess' onclick="BeginGame()">Start Game</button>
+        <button id='staGame' onclick="BeginGame()">Start Game</button>
     </div>
-    <div id='guessPart' style=""></div>
+    <div id='butDivT' class='divSec'>
+        <button id='revCode' onclick="RevealCode()" disabled>Reveal Code</button>
+    </div>
+    <div id='guessPart'></div>
+    <div id='codePart' class='divSec'></div>
     </body>
     <script>
 
         var MasterLog = new MasterMindlog();
 
+        function BeginGame() {
+
+            MasterLog.codeLeng = parseInt(lenCode.value);
+            MasterLog.GenerateCode();
+            MasterLog.GetNumOfColorsCode();
+
+            this.SetBeginSettings();
+
+            RemoveGuesses();
+
+        }
+
         function CheckGuess() {
 
-            //bdyEl = document.getElementById('bdyP');
-            guessEl = document.getElementById('guessPart');
-            parEl = document.createElement('p');
-            parEW = document.createElement('p');
+            var text;
+            var guessEl = document.getElementById('GuessBox');
+            var codReEl = document.getElementById('codePart');
+            var parEl = document.createElement('p');
+            var parEW = document.createElement('p');
 
-            var guessBox = document.getElementById('GuessBox');
+
             var guessDis;
-            MasterLog.guess = guessBox.value;
+            MasterLog.guess = guessEl.value;
             //guessDis = MasterLog.GenerateGuessStr();
             MasterLog.CopyNumCodeToGuess();
             //parEl.innerHTML = MasterLog._RandCode + " : " + MasterLog._GuessCdN;
@@ -42,28 +66,38 @@
             parEl.innerHTML = guessDis + " : " + MasterLog._GuessCdR;
 
             AddGuessPar();
-            if (MasterLog.guess == this._RandCode) {
-                parEW.innerHTML = "Corr";
-                bdyEl.appendChild(parEW);
+            if (MasterLog.codeMatc) {
+
+                text = "You guessed the code in ";
+                text = text + MasterLog.guessNum;
+                text = text + " moves";
+
+                codReEl.innerHTML = text;
+                this.SetNewGameSettings();
+                RemoveGuesses();
+
             }
+
             //bdyEl.appendChild(parEl);
 
             MasterLog.ClearGuessResult();
 
+
+
         }
 
-        function BeginGame() {
 
-            bdyEl = document.getElementById('bdyP');
-            parEl = document.createElement('p');
 
-                MasterLog.GenerateCode();
-                MasterLog.GetNumOfColorsCode();
+        function ConGuess() {
 
-            RemoveGuesses();
-            //parEl.innerHTML = ":: " + MasterLog._RandCode;
+            var evalGues = document.getElementById('evaGues');
+            var guessBox = document.getElementById('GuessBox');
+            var guess = guessBox.value;
 
-            //bdyEl.appendChild(parEl);
+            if (guess.length == MasterLog._RandCode.length)
+                evalGues.disabled = false;
+            else
+                evalGues.disabled = true;
 
         }
 
@@ -98,6 +132,64 @@
             }
 
             MasterLog.guessNum = 0;
+        }
+
+        function RevealCode() {
+
+            var code;
+            var lenCode = document.getElementById('lenCode');
+            var staGame = document.getElementById('staGame');
+
+            var parEl = document.createElement('p');
+            var codReEl = document.getElementById('codePart');
+
+            lenCode.disabled = false;
+            staGame.disabled = false;
+
+            code = "The code was: ";
+
+            for (var i = 0; i < MasterLog._RandCode.length; i++) {
+
+                code += " " + MasterLog._RandCode[i];
+
+            }
+
+            this.SetNewGameSettings();
+
+            parEl.innerHTML = code;
+            codReEl.appendChild(parEl);
+
+        }
+
+        function SetBeginSettings() {
+
+            var lenCode = document.getElementById('lenCode');
+            var staGame = document.getElementById('staGame');
+            var evaGues = document.getElementById('evaGues');
+            var revGues = document.getElementById('revCode');
+
+            lenCode.disabled = true;
+            staGame.disabled = true;
+            evaGues.disabled = false;
+            revGues.disabled = false;
+
+        }
+
+        function SetNewGameSettings() {
+
+            var lenCode = document.getElementById('lenCode');
+            var staGame = document.getElementById('staGame');
+            var evaGues = document.getElementById('evaGues');
+            var revGues = document.getElementById('revCode');
+
+            MasterLog.guessNum = 0;
+            MasterLog.codeMatc = false;
+
+            lenCode.disabled = false;
+            staGame.disabled = false;
+            evaGues.disabled = true;
+            revGues.disabled = true;
+
         }
 
     </script>
