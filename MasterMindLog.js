@@ -10,8 +10,24 @@ class MasterMindlog {
         this._GuessCdR = [];
         this._GuessPoC = [];
         this._GuessNum = 0;
-        this._CodeLeng;
+        this._CodeLeng = 0;
+        this._CodeMatG = false;
 
+    }
+
+    GenerateCode() {
+
+        var ranNum;
+
+        if (this._CodeLeng > 0)
+            this._RandCode.splice(0, this._CodeLeng);
+
+        for (var i = 0; i < this._CodeLeng; i++) {
+
+            ranNum = Math.floor(Math.random() * 6);
+            this._RandCode.push(this._ColorCds[ranNum]);
+
+        }
     }
 
     ClearGuessResult() {
@@ -56,20 +72,7 @@ class MasterMindlog {
         return strGuess;
     }
 
-    GenerateCode() {
 
-        var ranNum;
-
-        if (this._RandCode.length == 6)
-            this._RandCode.splice(0, 6);
-
-        for (var i = 0; i < 6; i++) {
-
-            ranNum = Math.floor(Math.random() * 6);
-            this._RandCode.push(this._ColorCds[ranNum]);
-
-        }
-    }
 
     GetCode() {
 
@@ -154,18 +157,26 @@ class MasterMindlog {
         var colorFound;
         var colorNotMa;
         var colorRemai;
-        var anyRemaini;
+        var blPinTotal = 0;
 
-        for (var i = 0; i < this._GuessUsr.length; i++) {
+        for (var i = 0; i < this._CodeLeng; i++) {
 
             if (this._GuessUsr[i] == this._RandCode[i]) {
 
                 colorFound = this.GetIndivColor(this._GuessUsr[i]);
+                blPinTotal = blPinTotal + 1;
                 this._GuessCdN[colorFound] -= 1;
                 this._GuessCdR.push("B");
 
             }
         }
+
+        if (blPinTotal == this._CodeLeng) {
+
+            this._CodeMatG = true;
+
+        }
+
     }
 
     GetWhiteReturns() {
@@ -175,7 +186,7 @@ class MasterMindlog {
         var colorRemai;
         var positNotMa;
 
-        for (var i = 0; i < this._GuessUsr.length; i++) {
+        for (var i = 0; i < this._CodeLeng; i++) {
 
             colorRemai = false;
             colorFound = this.GetIndivColor(this._GuessUsr[i]);
@@ -193,8 +204,12 @@ class MasterMindlog {
     }
 
     get guessNum() { return this._GuessNum; }
+    get codeLeng() { return this._CodeLeng; }
     get guess() { return this._GuessUsr; }
+    get codeMatc() { return this._CodeMatG; }
 
+    set codeLeng(alen) { this._CodeLeng = alen; }
+    set codeMatc(aMat) { this._CodeMatG = aMat; }
     set guess(aGuess) { this._GuessUsr = aGuess; }
     set guessNum(aGueNu) { this._GuessNum = aGueNu; }
 
