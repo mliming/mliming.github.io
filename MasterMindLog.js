@@ -2,7 +2,7 @@ class MasterMindlog {
 
     constructor() {
 
-        this._ColorCds = ["b", "g", "r", "y", "w", "l"];
+        this._ColorCds = ["B", "G", "R", "Y", "W", "L"];
         this._RandCode = [];
         this._GuessUsr = [];
         this._ColorCdN = [0, 0, 0, 0, 0, 0];
@@ -15,12 +15,23 @@ class MasterMindlog {
 
     }
 
-    GenerateCode() {
+    AddToGuess(aLet) {
+
+        this._GuessUsr.push(aLet);
+
+    }
+
+    ClearGuess() {
+
+        this._GuessUsr.splice(0, this._CodeLeng);
+
+    }
+
+    GenerateCode(aOldLen) {
 
         var ranNum;
 
-        if (this._CodeLeng > 0)
-            this._RandCode.splice(0, this._CodeLeng);
+        this._RandCode.splice(0, aOldLen);
 
         for (var i = 0; i < this._CodeLeng; i++) {
 
