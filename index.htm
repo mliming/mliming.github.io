@@ -8,8 +8,14 @@
 </head>
 <body id='bdyP'>
     <div id='sps' class='divSec'>
-        <p>Available Letters: b g r y w l</p>
-        <input id='GuessBox' type=text spellcheck="false" oninput="ConGuess()">
+        Choices:
+        <button id='gB' class='guessCl' disabled>B</button>
+        <button id='gG' class='guessCl' disabled>G</button>
+        <button id='gR' class='guessCl' disabled>R</button>
+        <button id='gY' class='guessCl' disabled>Y</button>
+        <button id='gW' class='guessCl' disabled>W</button>
+        <button id='gL' class='guessCl' disabled>L</button>
+        <p id='Guess'>Guess:</p>
     </div>
     <div id='butDivO' class='divSec'>
         <select id='lenCode'>
@@ -19,7 +25,9 @@
         </select>
     </div>
     <div id='butDivO' class='divSec'>
-        <button id='evaGues' onclick="CheckGuess()" disabled>Guess</button>
+        <button id='evaGues' onclick="CheckGuess()" disabled>
+            Confirm Guess
+        </button>
     </div>
     <div id='butDivT' class='divSec'>
         <button id='staGame' onclick="BeginGame()">Start Game</button>
@@ -27,6 +35,7 @@
     <div id='butDivT' class='divSec'>
         <button id='revCode' onclick="RevealCode()" disabled>Reveal Code</button>
     </div>
+    Results:
     <div id='guessPart'></div>
     <div id='codePart' class='divSec'></div>
     </body>
@@ -34,10 +43,14 @@
 
         var MasterLog = new MasterMindlog();
 
+        SetButtoClickSet();
+
         function BeginGame() {
 
+            var oldVal = MasterLog.codeLeng;
+
             MasterLog.codeLeng = parseInt(lenCode.value);
-            MasterLog.GenerateCode();
+            MasterLog.GenerateCode(oldVal);
             MasterLog.GetNumOfColorsCode();
 
             this.SetBeginSettings();
@@ -51,12 +64,13 @@
             var text;
             var guessEl = document.getElementById('GuessBox');
             var codReEl = document.getElementById('codePart');
+            var guessPa = document.getElementById('Guess');
             var parEl = document.createElement('p');
             var parEW = document.createElement('p');
 
 
             var guessDis;
-            MasterLog.guess = guessEl.value;
+            guessPa.innerHTML = "Guess:";
             //guessDis = MasterLog.GenerateGuessStr();
             MasterLog.CopyNumCodeToGuess();
             //parEl.innerHTML = MasterLog._RandCode + " : " + MasterLog._GuessCdN;
@@ -78,8 +92,8 @@
 
             }
 
-            //bdyEl.appendChild(parEl);
 
+            MasterLog.ClearGuess();
             MasterLog.ClearGuessResult();
 
 
@@ -91,13 +105,31 @@
         function ConGuess() {
 
             var evalGues = document.getElementById('evaGues');
-            var guessBox = document.getElementById('GuessBox');
-            var guess = guessBox.value;
 
-            if (guess.length == MasterLog._RandCode.length)
+            if (MasterLog.guess.length == MasterLog._RandCode.length)
                 evalGues.disabled = false;
             else
                 evalGues.disabled = true;
+
+        }
+
+        function AddGuessLet() {
+
+            var objId = this.id;
+            var guePa = document.getElementById('Guess');
+
+            if (MasterLog.guess.length < MasterLog._RandCode.length) {
+
+                guePa.innerHTML += " " + objId[1];
+                MasterLog.AddToGuess(objId[1]);
+
+            }
+
+        }
+
+        function AddGuessfunct(value, index, array) {
+
+            //array[i].addEventListener("click", AddGuessLet);
 
         }
 
@@ -139,8 +171,6 @@
             var code;
             var lenCode = document.getElementById('lenCode');
             var staGame = document.getElementById('staGame');
-
-            var parEl = document.createElement('p');
             var codReEl = document.getElementById('codePart');
 
             lenCode.disabled = false;
@@ -156,9 +186,32 @@
 
             this.SetNewGameSettings();
 
-            parEl.innerHTML = code;
-            codReEl.appendChild(parEl);
+            codReEl.innerHTML = code;
 
+        }
+
+        function SetButtoClickSet() {
+
+            var guessEls = document.getElementsByClassName('guessCl');
+
+            for (var i = 0; i < guessEls.length; i++) {
+
+                guessEls[i].addEventListener("click", AddGuessLet);
+                guessEls[i].addEventListener("click", ConGuess);
+
+            }
+
+        }
+
+        function SetButtonsOption(aBool) {
+
+            var guessEls = document.getElementsByClassName('guessCl');
+
+            for (var i = 0; i < guessEls.length; i++) {
+
+                guessEls[i].disabled = aBool;
+
+            }
         }
 
         function SetBeginSettings() {
@@ -167,11 +220,15 @@
             var staGame = document.getElementById('staGame');
             var evaGues = document.getElementById('evaGues');
             var revGues = document.getElementById('revCode');
+            var codReEl = document.getElementById('codePart');
 
             lenCode.disabled = true;
             staGame.disabled = true;
             evaGues.disabled = false;
             revGues.disabled = false;
+            codReEl.innerHTML = "";
+
+            SetButtonsOption(false);
 
         }
 
@@ -189,6 +246,8 @@
             staGame.disabled = false;
             evaGues.disabled = true;
             revGues.disabled = true;
+
+            SetButtonsOption(true);
 
         }
 
