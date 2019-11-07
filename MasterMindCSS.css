@@ -5,10 +5,16 @@
 
 }
 
+.guessCl {
+
+    margin-left: 5px;
+
+}
 #guessPart {
 
-    margin-top:20px;
+    border: 2px solid blue;
+    margin-top:10px;
     overflow:scroll;
     height:200px;
-    
+
 }
