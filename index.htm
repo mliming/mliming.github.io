@@ -53,8 +53,7 @@
             MasterLog.GenerateCode(oldVal);
             MasterLog.GetNumOfColorsCode();
 
-            this.SetBeginSettings();
-
+            SetBeginSettings();
             RemoveGuesses();
 
         }
@@ -80,6 +79,7 @@
             parEl.innerHTML = guessDis + " : " + MasterLog._GuessCdR;
 
             AddGuessPar();
+
             if (MasterLog.codeMatc) {
 
                 text = "You guessed the code in ";
@@ -87,8 +87,8 @@
                 text = text + " moves";
 
                 codReEl.innerHTML = text;
-                this.SetNewGameSettings();
-                RemoveGuesses();
+
+                SetNewGameSettings();
 
             }
 
@@ -154,16 +154,18 @@
         function RemoveGuesses() {
 
             var guess;
+            var loopN;
             var bdyEl = document.getElementById('guessPart');
 
-            for (var i = 0; i < MasterLog.guessNum; i++) {
+            loopN = MasterLog.guessNum - 1;
+            MasterLog.guessNum = 0;
+
+            for (var i = loopN; i >= 0; i--) {
 
                 guess = document.getElementById('GuessP' + i);
                 bdyEl.removeChild(guess);
 
             }
-
-            MasterLog.guessNum = 0;
         }
 
         function RevealCode() {
@@ -239,7 +241,6 @@
             var evaGues = document.getElementById('evaGues');
             var revGues = document.getElementById('revCode');
 
-            MasterLog.guessNum = 0;
             MasterLog.codeMatc = false;
 
             lenCode.disabled = false;

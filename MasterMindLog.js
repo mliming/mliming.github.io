@@ -41,6 +41,21 @@ class MasterMindlog {
         }
     }
 
+    GenerateTestCode(aOldLen) {
+
+        var ranNum;
+
+        this._RandCode.splice(0, aOldLen);
+
+        for (var i = 0; i < this._CodeLeng; i++) {
+
+            this._RandCode.push('B');
+            //ranNum = Math.floor(Math.random() * 6);
+            //this._RandCode.push(this._ColorCds[ranNum]);
+
+        }
+    }
+
     ClearGuessResult() {
 
         if (this._GuessCdR.length > 0)
