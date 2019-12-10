@@ -47,9 +47,11 @@
 
         function BeginGame() {
 
-            var oldVal = MasterLog.codeLeng;
+            var oldVal = MasterLog.CodeLeng;
+            var lenEle = document.getElementById('lenCode');
 
-            MasterLog.codeLeng = parseInt(lenCode.value);
+            MasterLog.CodeLeng = parseInt(lenEle.value);
+            MasterLog.ResetColorsCode();
             MasterLog.GenerateCode(oldVal);
             MasterLog.GetNumOfColorsCode();
 
@@ -106,7 +108,7 @@
 
             var evalGues = document.getElementById('evaGues');
 
-            if (MasterLog.guess.length == MasterLog._RandCode.length)
+            if (MasterLog._GuessUsr.length == MasterLog._RandCode.length)
                 evalGues.disabled = false;
             else
                 evalGues.disabled = true;

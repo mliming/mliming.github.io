@@ -136,6 +136,7 @@ class MasterMindlog {
         }
 
         return colorRes;
+
     }
 
     GetIndivColor(aColor) {
@@ -174,6 +175,15 @@ class MasterMindlog {
 
             properC = this.GetIndivColor(color);
             this._GuessCdN[i] += 1;
+
+        }
+    }
+
+    ResetColorsCode() {
+
+        for (var i = 0; i < this._ColorCdN.length; i++) {
+
+            this._ColorCdN[i] = 0;
 
         }
     }
@@ -234,7 +244,7 @@ class MasterMindlog {
     get guess() { return this._GuessUsr; }
     get codeMatc() { return this._CodeMatG; }
 
-    set codeLeng(alen) { this._CodeLeng = alen; }
+    set CodeLeng(alen) { this._CodeLeng = alen; }
     set codeMatc(aMat) { this._CodeMatG = aMat; }
     set guess(aGuess) { this._GuessUsr = aGuess; }
     set guessNum(aGueNu) { this._GuessNum = aGueNu; }
