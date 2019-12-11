@@ -27,11 +27,13 @@ class MasterMindlog {
 
     }
 
-    GenerateCode(aOldLen) {
+    GenerateCode() {
 
         var ranNum;
+        var ranLen;
 
-        this._RandCode.splice(0, aOldLen);
+        ranLen = this._RandCode.length;
+        this._RandCode.splice(0, ranLen);
 
         for (var i = 0; i < this._CodeLeng; i++) {
 

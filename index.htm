@@ -51,8 +51,9 @@
             var lenEle = document.getElementById('lenCode');
 
             MasterLog.CodeLeng = parseInt(lenEle.value);
+            
+            MasterLog.GenerateCode();
             MasterLog.ResetColorsCode();
-            MasterLog.GenerateCode(oldVal);
             MasterLog.GetNumOfColorsCode();
 
             SetBeginSettings();
