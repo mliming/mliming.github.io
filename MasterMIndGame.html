@@ -1,0 +1,538 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Master Mind</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no' />
+    <style>
+
+    .divSec {
+
+        margin-bottom: 10px;
+        margin-top: 10px;
+
+    }
+
+    .guessCl {
+
+        margin-left: 5px;
+
+    }
+
+    #guessPart {
+
+        border: 2px solid blue;
+        margin-top:10px;
+        overflow:scroll;
+        height:200px;
+
+    }
+
+    </style>
+</head>
+<body id='bdyP'>
+    <div id='sps' >
+        Choices:
+        <button id='gB' class='guessCl' disabled>B</button>
+        <button id='gG' class='guessCl' disabled>G</button>
+        <button id='gR' class='guessCl' disabled>R</button>
+        <button id='gY' class='guessCl' disabled>Y</button>
+        <button id='gW' class='guessCl' disabled>W</button>
+        <button id='gL' class='guessCl' disabled>L</button>
+        <p id='Guess'>Guess:</p>
+    </div>
+    <div id='butDivO' class='divSec'>
+        <select id='lenCode'>
+            <option>4 - letter secret code</option>
+            <option>5 - letter secret code</option>
+            <option>6 - letter secret code</option>
+        </select>
+    </div>
+    <div id='butDivO' class='divSec'>
+        <button id='evaGues' onclick="CheckGuess()" disabled>
+            Confirm Guess
+        </button>
+    </div>
+    <div id='butDivT' class='divSec'>
+        <button id='staGame' onclick="BeginGame()">Start Game</button>
+    </div>
+    <div id='butDivT' class='divSec'>
+        <button id='revCode' onclick="RevealCode()" disabled>Reveal Code</button>
+    </div>
+    Results:
+    <div id='guessPart'></div>
+    <div id='codePart' class='divSec'></div>
+    </body>
+    <script>
+
+    class MasterMindlog {
+
+        constructor() {
+
+            this._ColorCds = ["B", "G", "R", "Y", "W", "L"];
+            this._RandCode = [];
+            this._GuessUsr = [];
+            this._ColorCdN = [0, 0, 0, 0, 0, 0];
+            this._GuessCdN = [];
+            this._GuessCdR = [];
+            this._GuessPoC = [];
+            this._GuessNum = 0;
+            this._CodeLeng = 0;
+            this._CodeMatG = false;
+
+        }
+
+        AddToGuess(aLet) {
+
+            this._GuessUsr.push(aLet);
+
+        }
+
+        ClearGuess() {
+
+            this._GuessUsr.splice(0, this._CodeLeng);
+
+        }
+
+        GenerateCode() {
+
+            var ranNum;
+            var ranLen;
+
+            ranLen = this._RandCode.length;
+            this._RandCode.splice(0, ranLen);
+
+            for (var i = 0; i < this._CodeLeng; i++) {
+
+                ranNum = Math.floor(Math.random() * 6);
+                this._RandCode.push(this._ColorCds[ranNum]);
+
+            }
+        }
+
+        GenerateTestCode(aOldLen) {
+
+            var ranNum;
+
+            this._RandCode.splice(0, aOldLen);
+
+            for (var i = 0; i < this._CodeLeng; i++) {
+
+                this._RandCode.push('B');
+                //ranNum = Math.floor(Math.random() * 6);
+                //this._RandCode.push(this._ColorCds[ranNum]);
+
+            }
+        }
+
+        ClearGuessResult() {
+
+            if (this._GuessCdR.length > 0)
+                this._GuessCdR.splice(0, this._GuessCdR.length);
+
+        }
+
+        CopyNumCodeToGuess() {
+
+            for (var i = 0; i < this._ColorCdN.length; i++) {
+
+                this._GuessCdN[i] = this._ColorCdN[i];
+
+            }
+        }
+
+        GenerateGuessStr() {
+
+            var strGuess = "";
+
+            for (var i = 0; i < this._GuessUsr.length; i++) {
+
+                strGuess = strGuess + this._GuessUsr[i] + " ";
+
+            }
+
+            return strGuess;
+        }
+
+        GenerateResultStr() {
+
+            var strGuess = ": ";
+
+            for (var i = 0; i < this._GuessCdR.length; i++) {
+
+                strGuess = strGuess + this._GuessCdR[i] + " ";
+
+            }
+
+            return strGuess;
+        }
+
+
+
+        GetCode() {
+
+        }
+
+        CheckPropColors(aGuess) {
+
+            var color;
+            var properC;
+            var assumTr = true;
+
+            for (color of aGuess) {
+
+                properC = this.CheckIndivColor(color);
+                assumTr = properC && assumTr;
+
+            }
+
+            return assumTr;
+        }
+
+        CheckIndivColor(aColor) {
+
+            var colorC;
+            var colorRes = false;
+
+            for (colorC of this._ColorCds) {
+
+                if (aColor == colorC) {
+
+                    colorRes = true;
+                    break;
+
+                }
+            }
+
+            return colorRes;
+
+        }
+
+        GetIndivColor(aColor) {
+
+            var colorPos = 20;
+
+            for (var i = 0; i < this._ColorCds.length; i++) {
+
+                if (aColor == this._ColorCds[i]) {
+
+                    colorPos = i;
+                    break;
+
+                }
+            }
+
+            return colorPos;
+        }
+
+        GetNumOfColorsCode() {
+
+            var color;
+            var colorP;
+
+            for (color of this._RandCode) {
+
+                colorP = this.GetIndivColor(color);
+                this._ColorCdN[colorP] += 1;
+
+            }
+        }
+
+        GetNumOfColorsGues(aGuess) {
+
+            for (color of aGuess) {
+
+                properC = this.GetIndivColor(color);
+                this._GuessCdN[i] += 1;
+
+            }
+        }
+
+        ResetColorsCode() {
+
+            for (var i = 0; i < this._ColorCdN.length; i++) {
+
+                this._ColorCdN[i] = 0;
+
+            }
+        }
+
+        GetBlackReturns() {
+
+            var colorFound;
+            var colorNotMa;
+            var colorRemai;
+            var blPinTotal = 0;
+
+            for (var i = 0; i < this._CodeLeng; i++) {
+
+                if (this._GuessUsr[i] == this._RandCode[i]) {
+
+                    colorFound = this.GetIndivColor(this._GuessUsr[i]);
+                    blPinTotal = blPinTotal + 1;
+                    this._GuessCdN[colorFound] -= 1;
+                    this._GuessCdR.push("B");
+
+                }
+            }
+
+            if (blPinTotal == this._CodeLeng) {
+
+                this._CodeMatG = true;
+
+            }
+
+        }
+
+        GetWhiteReturns() {
+
+            var colorFound;
+            var colorNotMa;
+            var colorRemai;
+            var positNotMa;
+
+            for (var i = 0; i < this._CodeLeng; i++) {
+
+                colorRemai = false;
+                colorFound = this.GetIndivColor(this._GuessUsr[i]);
+
+                if (this._GuessCdN[colorFound] > 0)
+                    colorRemai = true;
+
+                if (this._GuessUsr[i] != this._RandCode[i] && colorRemai == true) {
+
+                    this._GuessCdN[colorFound] -= 1;
+                    this._GuessCdR.push("W");
+
+                }
+            }
+        }
+
+        get guessNum() { return this._GuessNum; }
+        get codeLeng() { return this._CodeLeng; }
+        get guess() { return this._GuessUsr; }
+        get codeMatc() { return this._CodeMatG; }
+
+        set CodeLeng(alen) { this._CodeLeng = alen; }
+        set codeMatc(aMat) { this._CodeMatG = aMat; }
+        set guess(aGuess) { this._GuessUsr = aGuess; }
+        set guessNum(aGueNu) { this._GuessNum = aGueNu; }
+
+    }
+        var MasterLog = new MasterMindlog();
+
+        SetButtoClickSet();
+
+        function BeginGame() {
+
+            var oldVal = MasterLog.CodeLeng;
+            var lenEle = document.getElementById('lenCode');
+
+            MasterLog.CodeLeng = parseInt(lenEle.value);
+
+            MasterLog.GenerateCode();
+            MasterLog.ResetColorsCode();
+            MasterLog.GetNumOfColorsCode();
+
+            SetBeginSettings();
+            RemoveGuesses();
+
+        }
+
+        function CheckGuess() {
+
+            var text;
+            var guessEl = document.getElementById('GuessBox');
+            var codReEl = document.getElementById('codePart');
+            var guessPa = document.getElementById('Guess');
+            var parEl = document.createElement('p');
+            var parEW = document.createElement('p');
+
+
+            var guessDis;
+            guessPa.innerHTML = "Guess:";
+            //guessDis = MasterLog.GenerateGuessStr();
+            MasterLog.CopyNumCodeToGuess();
+            //parEl.innerHTML = MasterLog._RandCode + " : " + MasterLog._GuessCdN;
+            MasterLog.GetBlackReturns();
+            MasterLog.GetWhiteReturns();
+
+            parEl.innerHTML = guessDis + " : " + MasterLog._GuessCdR;
+
+            AddGuessPar();
+
+            if (MasterLog.codeMatc) {
+
+                text = "You guessed the code in ";
+                text = text + MasterLog.guessNum;
+                text = text + " moves";
+
+                codReEl.innerHTML = text;
+
+                SetNewGameSettings();
+
+            }
+
+
+            MasterLog.ClearGuess();
+            MasterLog.ClearGuessResult();
+
+
+
+        }
+
+
+
+        function ConGuess() {
+
+            var evalGues = document.getElementById('evaGues');
+
+            if (MasterLog._GuessUsr.length == MasterLog._RandCode.length)
+                evalGues.disabled = false;
+            else
+                evalGues.disabled = true;
+
+        }
+
+        function AddGuessLet() {
+
+            var objId = this.id;
+            var guePa = document.getElementById('Guess');
+
+            if (MasterLog.guess.length < MasterLog._RandCode.length) {
+
+                guePa.innerHTML += " " + objId[1];
+                MasterLog.AddToGuess(objId[1]);
+
+            }
+
+        }
+
+        function AddGuessfunct(value, index, array) {
+
+            //array[i].addEventListener("click", AddGuessLet);
+
+        }
+
+        function AddGuessPar() {
+
+            var guessDis;
+            var resulDis;
+            var parEl = document.createElement('p');
+            var bdyEl = document.getElementById('guessPart');
+
+            guessDis = MasterLog.GenerateGuessStr();
+            resulDis = MasterLog.GenerateResultStr();
+
+            parEl.id = "GuessP" + MasterLog.guessNum;
+            parEl.innerHTML = guessDis + resulDis;
+            MasterLog.guessNum = MasterLog.guessNum + 1;
+
+            bdyEl.appendChild(parEl);
+
+        }
+
+        function RemoveGuesses() {
+
+            var guess;
+            var loopN;
+            var bdyEl = document.getElementById('guessPart');
+
+            loopN = MasterLog.guessNum - 1;
+            MasterLog.guessNum = 0;
+
+            for (var i = loopN; i >= 0; i--) {
+
+                guess = document.getElementById('GuessP' + i);
+                bdyEl.removeChild(guess);
+
+            }
+        }
+
+        function RevealCode() {
+
+            var code;
+            var lenCode = document.getElementById('lenCode');
+            var staGame = document.getElementById('staGame');
+            var codReEl = document.getElementById('codePart');
+
+            lenCode.disabled = false;
+            staGame.disabled = false;
+
+            code = "The code was: ";
+
+            for (var i = 0; i < MasterLog._RandCode.length; i++) {
+
+                code += " " + MasterLog._RandCode[i];
+
+            }
+
+            this.SetNewGameSettings();
+
+            codReEl.innerHTML = code;
+
+        }
+
+        function SetButtoClickSet() {
+
+            var guessEls = document.getElementsByClassName('guessCl');
+
+            for (var i = 0; i < guessEls.length; i++) {
+
+                guessEls[i].addEventListener("click", AddGuessLet);
+                guessEls[i].addEventListener("click", ConGuess);
+
+            }
+
+        }
+
+        function SetButtonsOption(aBool) {
+
+            var guessEls = document.getElementsByClassName('guessCl');
+
+            for (var i = 0; i < guessEls.length; i++) {
+
+                guessEls[i].disabled = aBool;
+
+            }
+        }
+
+        function SetBeginSettings() {
+
+            var lenCode = document.getElementById('lenCode');
+            var staGame = document.getElementById('staGame');
+            var evaGues = document.getElementById('evaGues');
+            var revGues = document.getElementById('revCode');
+            var codReEl = document.getElementById('codePart');
+
+            lenCode.disabled = true;
+            staGame.disabled = true;
+            evaGues.disabled = false;
+            revGues.disabled = false;
+            codReEl.innerHTML = "";
+
+            SetButtonsOption(false);
+
+        }
+
+        function SetNewGameSettings() {
+
+            var lenCode = document.getElementById('lenCode');
+            var staGame = document.getElementById('staGame');
+            var evaGues = document.getElementById('evaGues');
+            var revGues = document.getElementById('revCode');
+
+            MasterLog.codeMatc = false;
+
+            lenCode.disabled = false;
+            staGame.disabled = false;
+            evaGues.disabled = true;
+            revGues.disabled = true;
+
+            SetButtonsOption(true);
+
+        }
+
+
+
+    </script>
+</html>
